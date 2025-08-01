@@ -27,20 +27,20 @@ export class TaskRepository extends Repository<Task> {
     return this.find();
   }
 
-  async findById(id: string): Promise<Task> {
-    const task = await this.findById(id);
+  async findTaskById(id: string): Promise<Task> {
+    const task = await this.findOne({ where: { id } });
     if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
     return task;
   }
 
   async deleteTask(id: string): Promise<void> {
-    const task = await this.findById(id);
+    const task = await this.findOne({ where: { id } });
     if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
     await this.delete(id);
   }
 
   async updateStatus(id: string, status: TaskStatus): Promise<Task> {
-    const task = await this.findById(id);
+    const task = await this.findOne({ where: { id } });
     if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
     task.status = status;
     return this.save(task);
