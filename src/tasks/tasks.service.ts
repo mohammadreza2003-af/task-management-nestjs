@@ -10,7 +10,7 @@ import { TaskRepository } from './tasks.repository';
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository) {}
-  getAllTasks(): Task[] {
+  getAllTasks(): Promise<Task[]> {
     return this.getAllTasks();
   }
   // getTaskWithFilter(filterDto: GetTaskWithFilterDto): Task[] {
