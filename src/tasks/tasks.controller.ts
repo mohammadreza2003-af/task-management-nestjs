@@ -12,10 +12,11 @@ import { TasksService } from './tasks.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { GetTaskWithFilterDto } from './dto/get-task-filter..dto';
 import { UpdateTaskDto } from './dto/update-tast-status.dto';
+import { Task } from './task.entity';
 
 @Controller('tasks')
 export class TasksController {
-  // constructor(private tasksService: TasksService) {}
+  constructor(private tasksService: TasksService) {}
   // @Get()
   // getTasks(@Query() filterDto: GetTaskWithFilterDto): Task[] {
   //   if (Object.keys(filterDto).length) {
@@ -24,14 +25,14 @@ export class TasksController {
   //     return this.tasksService.getAllTasks();
   //   }
   // }
-  // @Post()
-  // createTask(@Body() createTaskDto: CreateTaskDto) {
-  //   return this.tasksService.createTask(createTaskDto);
-  // }
-  // @Get('/:id')
-  // getTaskById(@Param('id') id: string): Task {
-  //   return this.tasksService.getTaskById(id);
-  // }
+  @Post()
+  createTask(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
+    return this.tasksService.createTask(createTaskDto);
+  }
+  @Get('/:id')
+  getTaskById(@Param('id') id: string): Promise<Task> {
+    return this.tasksService.getTaskById(id);
+  }
   // @Delete('/:id')
   // deleteTask(@Param('id') id: string): void {
   //   return this.tasksService.deleteTask(id);
