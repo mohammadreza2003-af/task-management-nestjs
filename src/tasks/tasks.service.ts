@@ -10,9 +10,9 @@ import { TaskRepository } from './tasks.repository';
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository) {}
-  // getAllTasks(): Task[] {
-  //   return this.tasks;
-  // }
+  getAllTasks(): Task[] {
+    return this.getAllTasks();
+  }
   // getTaskWithFilter(filterDto: GetTaskWithFilterDto): Task[] {
   //   let tasks = this.getAllTasks();
   //   const { search, status } = filterDto;
