@@ -39,7 +39,7 @@ export class TaskRepository extends Repository<Task> {
     await this.delete(id);
   }
 
-  async updateStatus(id: string, status: TaskStatus): Promise<Task | null> {
+  async updateStatus(id: string, status: TaskStatus): Promise<Task> {
     const task = await this.findById(id);
     if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
     task.status = status;
