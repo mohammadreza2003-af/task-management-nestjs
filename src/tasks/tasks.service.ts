@@ -9,7 +9,7 @@ import { TaskRepository } from './tasks.repository';
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository) {}
   getAllTasks(): Promise<Task[]> {
-    return this.getAllTasks();
+    return this.taskRepository.getTasks();
   }
   getTaskWithFilter(filterDto: GetTaskWithFilterDto): Promise<Task[]> {
     return this.taskRepository.getTaskWithFilter(filterDto);
