@@ -1,3 +1,4 @@
+import * as bcrypt from 'bcrypt';
 import { DataSource, Repository } from 'typeorm';
 import { User } from './user.entity';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
@@ -15,21 +16,25 @@ export class UserRepository extends Repository<User> {
 
   async createUser(authCredentialsDto: AuthCredentialsDto): Promise<void> {
     const { username, password } = authCredentialsDto;
+
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     const user = this.create({
       username,
-      password,
+      password: hashedPassword,
     });
 
     try {
       await this.save(user);
-    } catch (error) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-      if (error.code === '23505') {
-        // Duplicate username error
-        throw new ConflictException('Username is already exists');
-      } else {
-        throw new InternalServerErrorException();
+    } catch (error: unknown) {
+      if (error instanceof Error && 'code' in error) {
+        const dbError = error as { code: string };
+        if (dbError.code === '23505') {
+          throw new ConflictException('Username already exists');
+        }
       }
+      throw new InternalServerErrorException();
     }
   }
 }
