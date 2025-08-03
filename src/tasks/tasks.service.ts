@@ -9,24 +9,21 @@ import { User } from 'src/auth/user.entity';
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository) {}
-  getAllTasks(): Promise<Task[]> {
-    return this.taskRepository.getTasks();
-  }
-  getTaskWithFilter(filterDto: GetTaskWithFilterDto): Promise<Task[]> {
-    return this.taskRepository.getTaskWithFilter(filterDto);
+  getAllTasks(filterDto: GetTaskWithFilterDto, user: User): Promise<Task[]> {
+    return this.taskRepository.getTasks(filterDto, user);
   }
   createTask(createTaskDto: CreateTaskDto, user: User): Promise<Task> {
     return this.taskRepository.createTask(createTaskDto, user);
   }
 
-  getTaskById(id: string): Promise<Task> {
-    return this.taskRepository.findTaskById(id);
+  getTaskById(id: string, user: User): Promise<Task> {
+    return this.taskRepository.findTaskById(id, user);
   }
 
-  async deleteTask(id: string): Promise<void> {
-    await this.taskRepository.deleteTask(id);
+  async deleteTask(id: string, user: User): Promise<void> {
+    await this.taskRepository.deleteTask(id, user);
   }
-  updateTaskStatus(id: string, status: TaskStatus): Promise<Task> {
-    return this.taskRepository.updateStatus(id, status);
+  updateTaskStatus(id: string, status: TaskStatus, user: User): Promise<Task> {
+    return this.taskRepository.updateStatus(id, status, user);
   }
 }

@@ -25,36 +25,13 @@ export class TaskRepository extends Repository<Task> {
     return this.save(task);
   }
 
-  async getTasks(): Promise<Task[]> {
-    return this.find();
-  }
-
-  async findTaskById(id: string): Promise<Task> {
-    const task = await this.findOne({ where: { id } });
-    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
-    return task;
-  }
-
-  async deleteTask(id: string): Promise<void> {
-    const task = await this.findOne({ where: { id } });
-    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
-    await this.delete(id);
-  }
-
-  async updateStatus(id: string, status: TaskStatus): Promise<Task> {
-    const task = await this.findOne({ where: { id } });
-    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
-    task.status = status;
-    return this.save(task);
-  }
-
-  async getTaskWithFilter(filterDto: GetTaskWithFilterDto): Promise<Task[]> {
+  async getTasks(filterDto: GetTaskWithFilterDto, user: User): Promise<Task[]> {
     const { status, search } = filterDto;
     const query = this.createQueryBuilder('task');
+    query.where({ user });
     if (status) {
       query.andWhere('task.status = :status', { status });
     }
-
     if (search) {
       query.andWhere(
         '(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))',
@@ -62,5 +39,28 @@ export class TaskRepository extends Repository<Task> {
       );
     }
     return query.getMany();
+  }
+
+  async findTaskById(id: string, user: User): Promise<Task> {
+    const task = await this.findOne({ where: { id, user } });
+    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
+    return task;
+  }
+
+  async deleteTask(id: string, user: User): Promise<void> {
+    const task = await this.findOne({ where: { id, user } });
+    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
+    await this.delete(id);
+  }
+
+  async updateStatus(
+    id: string,
+    status: TaskStatus,
+    user: User,
+  ): Promise<Task> {
+    const task = await this.findOne({ where: { id, user } });
+    if (!task) throw new NotFoundException(`Task with ID "${id}" not found`);
+    task.status = status;
+    return this.save(task);
   }
 }
